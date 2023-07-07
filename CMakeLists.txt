@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(2DShadowCast VERSION 0.1.0 LANGUAGES CXX)
 
-set(SOURCES src/main.cpp src/canvas.cpp)
+set(SOURCES src/main.cpp src/canvas.cpp src/wall.cpp)
 
 add_executable(2DShadowCast ${SOURCES})
 
