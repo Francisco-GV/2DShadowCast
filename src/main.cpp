@@ -1,7 +1,7 @@
-#include <iostream>
 #include "canvas.h"
 
-int main() {
+int main()
+{
     Canvas canvas;
 
     canvas.start();
