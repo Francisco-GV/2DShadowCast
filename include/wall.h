@@ -1,3 +1,6 @@
+#ifndef WALL_H
+#define WALL_H
+
 #include "SFML/Graphics.hpp"
 
 class Wall
@@ -12,3 +15,5 @@ private:
     sf::Vector2f a;
     sf::Vector2f b;
 };
+
+#endif
