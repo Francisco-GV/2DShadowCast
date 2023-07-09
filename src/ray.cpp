@@ -1,20 +1,62 @@
 #include "ray.h"
 
-#include <cmath>
-
 Ray::Ray(float x, float y, float angle) : startingPoint(x, y), angle(angle)
 {
+    calculateDirection();
 }
+
+Ray::Ray(float x, float y, sf::Vector2f directionPoint) : startingPoint(x, y), direction(directionPoint)
+{
+    calculateAngle();
+}
+
 
 sf::Vector2f Ray::getPosition()
 {
     return startingPoint;
 }
 
+sf::Vector2f Ray::getDirection()
+{
+    return direction;
+}
+
+void Ray::setPosition(float x, float y)
+{
+    startingPoint.x = x;
+    startingPoint.y = y;
+
+    calculateDirection();
+    calculateAngle();
+}
+
+void Ray::setDirectionPoint(float x, float y)
+{
+    direction.x = x;
+    direction.y = y;
+
+    calculateAngle();
+}
+
+void Ray::setAngle(float a)
+{
+    angle = a;
+
+    calculateDirection();
+}
+
 void Ray::calculateDirection()
 {
     direction.x = startingPoint.x + std::cos(angle);
     direction.y = startingPoint.y + std::sin(angle);
+}
+
+void Ray::calculateAngle()
+{
+    float dx = direction.x - startingPoint.x;
+    float dy = direction.y - startingPoint.y;
+
+    angle = std::atan2(dy, dx);
 }
 
 // Line-Line Intersection Approach
@@ -32,8 +74,8 @@ sf::Vector2f* Ray::calculateIntersection(Wall& wall)
 
     float denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
 
-    float t = (x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4) / denominator;
-    float u = (x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2) / denominator;
+    float t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denominator;
+    float u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denominator;
 
     if ((t > 0 && t < 1) && (u > 0))
     {
