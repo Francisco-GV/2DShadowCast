@@ -59,7 +59,7 @@ void Ray::calculateAngle()
     angle = std::atan2(dy, dx);
 }
 
-// Line-Line Intersection Approach
+// Line-Line Intersection with two line Segments
 std::pair<sf::Vector2f, float>* Ray::calculateIntersection(Wall& wall)
 {
     float x1 = wall.getA().x;
@@ -74,8 +74,13 @@ std::pair<sf::Vector2f, float>* Ray::calculateIntersection(Wall& wall)
 
     float denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
 
+    if (denominator == 0) // If denominator is 0, the lines are parallel or coincident
+    {
+        return nullptr;
+    }
+
     float t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denominator;
-    float u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denominator;
+    float u = ((x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)) / denominator;
 
     if ((t > 0 && t < 1) && (u > 0))
     {
