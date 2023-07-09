@@ -60,7 +60,7 @@ void Ray::calculateAngle()
 }
 
 // Line-Line Intersection Approach
-sf::Vector2f* Ray::calculateIntersection(Wall& wall)
+std::pair<sf::Vector2f, float>* Ray::calculateIntersection(Wall& wall)
 {
     float x1 = wall.getA().x;
     float x2 = wall.getB().x;
@@ -82,7 +82,7 @@ sf::Vector2f* Ray::calculateIntersection(Wall& wall)
         float x = x1 + t * (x2 - x1);
         float y = y1 + t * (y2 - y1);   
 
-        return new sf::Vector2f(x, y);
+        return new std::pair(sf::Vector2f(x, y), u);
     }
 
     return nullptr;

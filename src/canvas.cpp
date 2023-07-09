@@ -1,5 +1,8 @@
 #include "canvas.h"
 #include "wall.h"
+#include "ray.h"
+
+Ray* ray = nullptr;
 
 Canvas::Canvas() : window(sf::VideoMode(640, 360), "2DShadowCast | C++/SFML")
 {   
@@ -57,6 +60,8 @@ Canvas::Canvas() : window(sf::VideoMode(640, 360), "2DShadowCast | C++/SFML")
 
 void Canvas::start()
 {
+    ray = new Ray(window.getSize().x / 2.f, window.getSize().y / 2.f, sf::Vector2f(0, 0)); // Temp value
+
     while (window.isOpen())
     {
         update();
@@ -80,6 +85,14 @@ void Canvas::draw()
         window.draw(lineLines, 2, sf::Lines);
     }
 
+    sf::Vertex rayLines[]
+    {
+        sf::Vertex(ray->getPosition(), sf::Color::Red),
+        sf::Vertex(ray->getDirection(), sf::Color::Red)
+    };
+
+    window.draw(rayLines, 2, sf::Lines);
+
     window.display();
 }
 
@@ -94,4 +107,42 @@ void Canvas::update()
             window.close();
         }
     }
+
+    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    ray->setDirectionPoint(mousePos.x, mousePos.y);
+
+    std::pair<sf::Vector2f, float>* minimum = nullptr;
+
+    for (Wall wall : walls)
+    {
+        std::pair<sf::Vector2f, float>* intersection = ray->calculateIntersection(wall);
+
+        if (intersection != nullptr)
+        {
+            if (minimum == nullptr)
+            {
+                minimum = intersection;
+                continue;
+            }
+            else
+            {
+                if (intersection->second < minimum->second)
+                {
+                    minimum = intersection;
+                }
+                else
+                {
+                    delete intersection;
+                }
+            }
+        }
+    }
+
+    if (minimum != nullptr)
+    {
+        ray->setDirectionPoint(minimum->first.x, minimum->first.y);
+    }
+
+    delete minimum;
+
 }

@@ -3,6 +3,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "wall.h"
+#include <utility>
 #include <cmath>
 
 class Ray
@@ -10,7 +11,7 @@ class Ray
 public:
     Ray(float x, float y, float angle);
     Ray(float x, float y, sf::Vector2f directionPoint);
-    sf::Vector2f* calculateIntersection(Wall& wall);
+    std::pair<sf::Vector2f, float>* calculateIntersection(Wall& wall);
     void setPosition(float x, float y);
     sf::Vector2f getPosition();
     void setDirectionPoint(float x, float y);
