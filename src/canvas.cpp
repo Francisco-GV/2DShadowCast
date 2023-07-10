@@ -1,8 +1,4 @@
 #include "canvas.h"
-#include "wall.h"
-#include "ray.h"
-
-Ray* ray = nullptr;
 
 Canvas::Canvas() : window(sf::VideoMode(640, 360), "2DShadowCast | C++/SFML")
 {   
@@ -60,7 +56,13 @@ Canvas::Canvas() : window(sf::VideoMode(640, 360), "2DShadowCast | C++/SFML")
 
 void Canvas::start()
 {
-    ray = new Ray(window.getSize().x / 2.f, window.getSize().y / 2.f, sf::Vector2f(0, 0)); // Temp value
+    for (float i = 0; i < 360; i += 10)
+    {
+        float rad = i * PI / 180.f;
+        Ray ray(window.getSize().x / 2.f, window.getSize().y / 2.f, rad);
+
+        rays.push_back(ray);
+    }
 
     while (window.isOpen())
     {
@@ -85,15 +87,17 @@ void Canvas::draw()
         window.draw(lineLines, 2, sf::Lines);
     }
 
-    sf::Vertex rayLines[]
+    for (Ray ray : rays)
     {
-        sf::Vertex(ray->getPosition(), sf::Color::Red),
-        sf::Vertex(ray->getDirection(), sf::Color::Red)
-    };
+        sf::Vertex rayLines[]
+        {
+            sf::Vertex(ray.getPosition(), sf::Color::Red),
+            sf::Vertex(ray.getDirection(), sf::Color::Red)
+        };
 
-    window.draw(rayLines, 2, sf::Lines);
-
-    window.display();
+        window.draw(rayLines, 2, sf::Lines);
+    }
+    window.display(); 
 }
 
 void Canvas::update()
@@ -109,40 +113,43 @@ void Canvas::update()
     }
 
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-    ray->setDirectionPoint(mousePos.x, mousePos.y);
 
-    std::pair<sf::Vector2f, float>* minimum = nullptr;
-
-    for (Wall wall : walls)
+    for (Ray& ray : rays)
     {
-        std::pair<sf::Vector2f, float>* intersection = ray->calculateIntersection(wall);
+        ray.setPosition(mousePos.x, mousePos.y);
 
-        if (intersection != nullptr)
+        std::pair<sf::Vector2f, float>* minimum = nullptr;
+
+        for (Wall& wall : walls)
         {
-            if (minimum == nullptr)
+            std::pair<sf::Vector2f, float>* intersection = ray.calculateIntersection(wall);
+
+            if (intersection != nullptr)
             {
-                minimum = intersection;
-                continue;
-            }
-            else
-            {
-                if (intersection->second < minimum->second)
+                if (minimum == nullptr)
                 {
                     minimum = intersection;
+                    continue;
                 }
                 else
                 {
-                    delete intersection;
+                    if (intersection->second < minimum->second)
+                    {
+                        minimum = intersection;
+                    }
+                    else
+                    {
+                        delete intersection;
+                    }
                 }
             }
         }
+
+        if (minimum != nullptr)
+        {
+            ray.setDirectionPoint(minimum->first.x, minimum->first.y);
+        }
+
+        delete minimum;
     }
-
-    if (minimum != nullptr)
-    {
-        ray->setDirectionPoint(minimum->first.x, minimum->first.y);
-    }
-
-    delete minimum;
-
 }
