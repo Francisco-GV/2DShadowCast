@@ -24,11 +24,6 @@ namespace config
     /* Predefined walls */
     // Polygons copied from https://ncase.me/sight-and-light/ source code
     std::vector<std::vector<std::vector<float>>> predefinedPolygons {
-        {{0,0}, {640,0}},
-        {{640,0}, {640,360}},
-        {{640,360}, {0,360}},
-        {{0,360}, {0,0}},
-
         // Polygon #1
         {{100,150}, {120,50}},
         {{120,50}, {200,80}},

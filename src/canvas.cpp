@@ -26,6 +26,26 @@ Canvas::Canvas() : window(sf::VideoMode(config::winWidth, config::winHeight),
 
         walls.emplace_back(ax, ay, bx, by);
     }
+
+    // Create boundary walls
+    sf::Vector2f size(window.getSize());
+
+    float boundary[4][2][2] = {
+        {{     0,      0}, {size.x,      0}},
+        {{size.x,      0}, {size.x, size.y}},
+        {{size.x, size.y}, {     0, size.y}},
+        {{     0, size.y}, {     0,      0}}
+    };
+
+    for (float(&a1)[2][2] : boundary)
+    {
+        float ax = a1[0][0];
+        float ay = a1[0][1];
+        float bx = a1[1][0];
+        float by = a1[1][1];
+
+        walls.emplace_back(ax, ay, bx, by);
+    }
 }
 
 void Canvas::start()
