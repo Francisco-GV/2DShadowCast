@@ -61,23 +61,46 @@ void Canvas::draw()
         window.draw(lineLines, 2, sf::Lines);
     }
 
-    for (Ray& ray : rays)
+    // Draw rays
+    if (raysVisible)
     {
-        sf::Vertex rayLines[]
+        for (Ray& ray : rays)
         {
-            sf::Vertex(ray.getPosition(), config::raysColor),
-            sf::Vertex(ray.getDirection(), config::raysColor)
+            sf::Vertex rayLines[]
+            {
+                sf::Vertex(ray.getPosition(), config::raysColor),
+                sf::Vertex(ray.getDirection(), config::raysColor)
+            };
+
+            window.draw(rayLines, 2, sf::Lines);
+        }
+    }
+
+    // Draw new wall
+    if (firstPoint != nullptr)
+    {
+        sf::Vertex newWallLines[]
+        {
+            sf::Vertex(*firstPoint, config::newWallColor),
+            sf::Vertex(mousePosition, config::newWallColor)
         };
 
-        window.draw(rayLines, 2, sf::Lines);
+        window.draw(newWallLines, 2, sf::Lines);
     }
+
     window.display(); 
 }
 
 void Canvas::update()
 {
+    mousePosition = sf::Vector2f(sf::Mouse::getPosition(window));
+
     manageEvents();
-    updateIntersections();
+
+    if (raysVisible)
+    {
+        updateIntersections();
+    }
 }
 
 void Canvas::manageEvents()
@@ -85,21 +108,45 @@ void Canvas::manageEvents()
     sf::Event event;
     while (window.pollEvent(event))
     {   
-        if (event.type == sf::Event::Closed)
+        switch (event.type)
         {
-            window.close();
+            // Window
+            case sf::Event::Closed:
+                window.close();
+                break;
+            
+            // Mouse
+            case sf::Event::MouseButtonPressed:
+                
+                if (event.mouseButton.button == sf::Mouse::Left)
+                {
+                    if (firstPoint == nullptr)
+                    {
+                        raysVisible = false;
+                        firstPoint = new sf::Vector2f(mousePosition);
+                    }
+                    else // if firstPoint != nullptr
+                    {
+                        walls.emplace_back(*firstPoint, mousePosition);
+                        
+                        raysVisible = true;
+
+                        delete firstPoint;
+                        firstPoint = nullptr;
+                    }
+                }
+                
+                break;
         }
     }
 }
 
 void Canvas::updateIntersections()
 {
-    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-
     for (Ray& ray : rays)
     {
         // Move rays starting point to mouse position
-        ray.setPosition(mousePos.x, mousePos.y);
+        ray.setPosition(mousePosition.x, mousePosition.y);
 
         std::pair<sf::Vector2f, float>* minimum = nullptr;
 

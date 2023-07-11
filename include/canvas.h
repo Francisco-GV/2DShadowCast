@@ -17,6 +17,10 @@ private:
     sf::RenderWindow window;
     std::vector<Ray> rays;
     std::vector<Wall> walls;
+    sf::Vector2f mousePosition;
+    bool raysVisible = true;
+    sf::Vector2f* firstPoint = nullptr;
+
 
     void updateIntersections();
     void manageEvents();
