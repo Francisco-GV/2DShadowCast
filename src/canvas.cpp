@@ -1,49 +1,23 @@
 #include "canvas.h"
+#include "config.h"
 
-Canvas::Canvas() : window(sf::VideoMode(640, 360), "2DShadowCast | C++/SFML", sf::Style::Default, sf::ContextSettings(0u, 0u, 8u))
+sf::ContextSettings Canvas::createContextSettings()
+{
+    sf::ContextSettings settings;
+
+    if (config::antialiasing)
+    {
+        settings.antialiasingLevel = 8u;
+    }
+    
+    return settings;
+}
+
+Canvas::Canvas() : window(sf::VideoMode(config::winWidth, config::winHeight), 
+        config::winTitle, sf::Style::Default, createContextSettings())
 {   
-    // Polygons copied from https://ncase.me/sight-and-light/ source code
-    std::vector<std::vector<std::vector<float>>> polygons {
-        {{0,0}, {640,0}},
-        {{640,0}, {640,360}},
-        {{640,360}, {0,360}},
-        {{0,360}, {0,0}},
-
-        // Polygon #1
-        {{100,150}, {120,50}},
-        {{120,50}, {200,80}},
-        {{200,80}, {140,210}},
-        {{140,210}, {100,150}},
-
-        // Polygon #2
-        {{100,200}, {120,250}},
-        {{120,250}, {60,300}},
-        {{60,300}, {100,200}},
-
-        // Polygon #3
-        {{200,260}, {220,150}},
-        {{220,150}, {300,200}},
-        {{300,200}, {350,320}},
-        {{350,320}, {200,260}},
-
-        // Polygon #4
-        {{340,60}, {360,40}},
-        {{360,40}, {370,70}},
-        {{370,70}, {340,60}},
-
-        // Polygon #5
-        {{450,190}, {560,170}},
-        {{560,170}, {540,270}},
-        {{540,270}, {430,290}},
-        {{430,290}, {450,190}},
-
-        // Polygon #6
-        {{400,95}, {580,50}},
-        {{580,50}, {480,150}},
-        {{480,150}, {400,95}}
-    };
-
-    for (std::vector<std::vector<float>> v1 : polygons)
+    // Load predefined walls
+    for (std::vector<std::vector<float>> v1 : config::predefinedPolygons)
     {
         float ax = v1[0][0];
         float ay = v1[0][1];
@@ -56,9 +30,9 @@ Canvas::Canvas() : window(sf::VideoMode(640, 360), "2DShadowCast | C++/SFML", sf
 
 void Canvas::start()
 {
-    for (float i = 0; i < 360; i += 1)
+    for (int i = 0; i < config::nRays; i++)
     {
-        float rad = i * PI / 180.f;
+        float rad = i * config::PI / 180.f;
         Ray ray(window.getSize().x / 2.f, window.getSize().y / 2.f, rad);
 
         rays.push_back(ray);
@@ -73,26 +47,26 @@ void Canvas::start()
 
 void Canvas::draw()
 {
-    window.clear(sf::Color::Black);
+    window.clear(config::bgColor);
 
     //Draw walls
-    for (Wall wall : walls)
+    for (Wall& wall : walls)
     {
         sf::Vertex lineLines[]
         {
-            sf::Vertex(wall.getA(), sf::Color::White),
-            sf::Vertex(wall.getB(), sf::Color::White)
+            sf::Vertex(wall.getA(), config::wallsColor),
+            sf::Vertex(wall.getB(), config::wallsColor)
         };
 
         window.draw(lineLines, 2, sf::Lines);
     }
 
-    for (Ray ray : rays)
+    for (Ray& ray : rays)
     {
         sf::Vertex rayLines[]
         {
-            sf::Vertex(ray.getPosition(), sf::Color(255, 255, 255, 100)),
-            sf::Vertex(ray.getDirection(), sf::Color(255, 255, 255, 100))
+            sf::Vertex(ray.getPosition(), config::raysColor),
+            sf::Vertex(ray.getDirection(), config::raysColor)
         };
 
         window.draw(rayLines, 2, sf::Lines);
