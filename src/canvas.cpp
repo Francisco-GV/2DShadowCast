@@ -14,7 +14,7 @@ sf::ContextSettings Canvas::createContextSettings()
 }
 
 Canvas::Canvas() : window(sf::VideoMode(config::winWidth, config::winHeight), 
-        config::winTitle, sf::Style::Default, createContextSettings())
+        config::winTitle, sf::Style::Titlebar | sf::Style::Close, createContextSettings())
 {   
     // Load predefined walls
     for (std::vector<std::vector<float>> v1 : config::predefinedPolygons)
@@ -76,8 +76,8 @@ void Canvas::draw()
 
 void Canvas::update()
 {
+    // Manage events 
     sf::Event event;
-
     while (window.pollEvent(event))
     {
         if (event.type == sf::Event::Closed)
