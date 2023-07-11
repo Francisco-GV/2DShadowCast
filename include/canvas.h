@@ -13,13 +13,14 @@ public:
     void start();
     void draw();
     void update();
-    void updateIntersections();
 private:
     sf::RenderWindow window;
     std::vector<Ray> rays;
     std::vector<Wall> walls;
 
-    static sf::ContextSettings createContextSettings();
+    void updateIntersections();
+    void manageEvents();
+    static sf::ContextSettings createContextSettings();  
 };
 
 #endif // !CANVAS_H

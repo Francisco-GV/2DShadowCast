@@ -76,17 +76,20 @@ void Canvas::draw()
 
 void Canvas::update()
 {
-    // Manage events 
+    manageEvents();
+    updateIntersections();
+}
+
+void Canvas::manageEvents()
+{
     sf::Event event;
     while (window.pollEvent(event))
-    {
+    {   
         if (event.type == sf::Event::Closed)
         {
             window.close();
         }
     }
-
-    updateIntersections();
 }
 
 void Canvas::updateIntersections()
