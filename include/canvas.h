@@ -15,6 +15,7 @@ public:
     void start();
     void draw();
     void update();
+    void updateIntersections();
 private:
     sf::RenderWindow window;
     std::vector<Ray> rays;

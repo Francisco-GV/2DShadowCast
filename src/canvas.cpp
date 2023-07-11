@@ -112,10 +112,16 @@ void Canvas::update()
         }
     }
 
+    updateIntersections();
+}
+
+void Canvas::updateIntersections()
+{
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 
     for (Ray& ray : rays)
     {
+        // Move rays starting point to mouse position
         ray.setPosition(mousePos.x, mousePos.y);
 
         std::pair<sf::Vector2f, float>* minimum = nullptr;
