@@ -1,6 +1,6 @@
 #include "canvas.h"
 
-Canvas::Canvas() : window(sf::VideoMode(640, 360), "2DShadowCast | C++/SFML")
+Canvas::Canvas() : window(sf::VideoMode(640, 360), "2DShadowCast | C++/SFML", sf::Style::Default, sf::ContextSettings(0u, 0u, 8u))
 {   
     // Polygons copied from https://ncase.me/sight-and-light/ source code
     std::vector<std::vector<std::vector<float>>> polygons {
@@ -56,7 +56,7 @@ Canvas::Canvas() : window(sf::VideoMode(640, 360), "2DShadowCast | C++/SFML")
 
 void Canvas::start()
 {
-    for (float i = 0; i < 360; i += 10)
+    for (float i = 0; i < 360; i += 1)
     {
         float rad = i * PI / 180.f;
         Ray ray(window.getSize().x / 2.f, window.getSize().y / 2.f, rad);
@@ -73,15 +73,15 @@ void Canvas::start()
 
 void Canvas::draw()
 {
-    window.clear(sf::Color::White);
+    window.clear(sf::Color::Black);
 
     //Draw walls
     for (Wall wall : walls)
     {
         sf::Vertex lineLines[]
         {
-            sf::Vertex(wall.getA(), sf::Color::Black),
-            sf::Vertex(wall.getB(), sf::Color::Black)
+            sf::Vertex(wall.getA(), sf::Color::White),
+            sf::Vertex(wall.getB(), sf::Color::White)
         };
 
         window.draw(lineLines, 2, sf::Lines);
@@ -91,8 +91,8 @@ void Canvas::draw()
     {
         sf::Vertex rayLines[]
         {
-            sf::Vertex(ray.getPosition(), sf::Color::Red),
-            sf::Vertex(ray.getDirection(), sf::Color::Red)
+            sf::Vertex(ray.getPosition(), sf::Color(255, 255, 255, 100)),
+            sf::Vertex(ray.getDirection(), sf::Color(255, 255, 255, 100))
         };
 
         window.draw(rayLines, 2, sf::Lines);
