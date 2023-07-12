@@ -1,13 +1,19 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(2DShadowCast VERSION 0.1.0 LANGUAGES CXX)
+project(2DShadowCast VERSION 1.1.0 LANGUAGES CXX)
 
 set(SOURCES src/main.cpp src/canvas.cpp src/wall.cpp src/ray.cpp)
-
 add_executable(2DShadowCast ${SOURCES})
-
 target_include_directories(2DShadowCast PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-find_package(SFML 2 REQUIRED COMPONENTS graphics)
+# Setup SFML
+set(SFML_LIBS sfml-graphics sfml-window sfml-system)
 
-target_link_libraries(2DShadowCast PRIVATE sfml-graphics)
+find_package(SFML 2 REQUIRED COMPONENTS graphics window system)
+target_link_libraries(2DShadowCast PRIVATE ${SFML_LIBS})
 target_include_directories(2DShadowCast PRIVATE ${SFML_INCLUDE_DIR})
+
+# Copy SFML DLLs to build directory
+foreach (lib ${SFML_LIBS})
+    get_target_property(lib_path ${lib} LOCATION)
+    file(COPY ${lib_path} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+endforeach()
