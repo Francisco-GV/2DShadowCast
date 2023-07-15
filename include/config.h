@@ -20,6 +20,7 @@ namespace config
     sf::Color wallsColor = sf::Color::White;
     sf::Color raysColor = sf::Color(255, 255, 255, 100);
     sf::Color newWallColor = sf::Color::Yellow;
+    sf::Color nearestWallColor = sf::Color::Red;
 
     /* Predefined walls */
     // Polygons copied from https://ncase.me/sight-and-light/ source code

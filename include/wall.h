@@ -12,6 +12,7 @@ public:
     sf::Vector2f getA();
     sf::Vector2f getB();
 
+    bool operator==(const Wall& wall) const;
 private:
     sf::Vector2f a;
     sf::Vector2f b;

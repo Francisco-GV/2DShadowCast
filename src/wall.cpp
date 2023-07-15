@@ -17,3 +17,8 @@ sf::Vector2f Wall::getB()
 {
     return b;
 }
+
+bool Wall::operator==(const Wall &wall) const
+{
+    return (a == wall.a && b == wall.b);
+}

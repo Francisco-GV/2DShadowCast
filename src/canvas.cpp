@@ -1,5 +1,9 @@
 #include "canvas.h"
 #include "config.h"
+#include <cmath>
+#include <limits>
+#include <algorithm>
+#include <array>
 
 sf::ContextSettings Canvas::createContextSettings()
 {
@@ -16,6 +20,8 @@ sf::ContextSettings Canvas::createContextSettings()
 Canvas::Canvas() : window(sf::VideoMode(config::winWidth, config::winHeight), 
         config::winTitle, sf::Style::Titlebar | sf::Style::Close, createContextSettings())
 {   
+    isCtrlPressed = false;
+
     // Load predefined walls
     for (std::vector<std::vector<float>> v1 : config::predefinedPolygons)
     {
@@ -44,7 +50,8 @@ Canvas::Canvas() : window(sf::VideoMode(config::winWidth, config::winHeight),
         float bx = a1[1][0];
         float by = a1[1][1];
 
-        walls.emplace_back(ax, ay, bx, by);
+        Wall wall = boundaryWalls.emplace_back(ax, ay, bx, by);
+        walls.push_back(wall);
     }
 }
 
@@ -78,6 +85,19 @@ void Canvas::draw()
             sf::Vertex(wall.getB(), config::wallsColor)
         };
 
+        window.draw(lineLines, 2, sf::Lines);
+    }
+
+    // Draw nearest wall when Ctrl is pressed 
+    if (nearestWall != nullptr)
+    {
+        sf::Vertex lineLines[]
+        {
+            sf::Vertex(nearestWall->getA(), config::nearestWallColor),
+            sf::Vertex(nearestWall->getB(), config::nearestWallColor)
+
+        };
+        // Over drawn
         window.draw(lineLines, 2, sf::Lines);
     }
 
@@ -153,37 +173,117 @@ void Canvas::manageEvents()
             case sf::Event::MouseButtonPressed:
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                    if (firstPoint == nullptr)
+                    if (isCtrlPressed)
                     {
-                        raysVisible = false;
-                        firstPoint = new sf::Vector2f(mousePosition);
-                    }
-                    else // if firstPoint != nullptr
+                        if (nearestWall != nullptr)
+                        {
+                            walls.erase(std::remove(walls.begin(), walls.end(), *nearestWall), walls.end());
+                            nearestWall = nullptr;
+                        }
+                    } 
+                    else
                     {
-                        walls.emplace_back(*firstPoint, mousePosition);
-                        
-                        raysVisible = true;
+                        if (firstPoint == nullptr)
+                        {
+                            raysVisible = false;
+                            firstPoint = new sf::Vector2f(mousePosition);
+                        }
+                        else // if firstPoint != nullptr
+                        {
+                            walls.emplace_back(*firstPoint, mousePosition);
+                            
+                            raysVisible = true;
 
-                        delete firstPoint;
-                        firstPoint = nullptr;
-                    }
+                            delete firstPoint;
+                            firstPoint = nullptr;
+                        }
+                    }                    
                 }
                 break;
-            
+
             // Keyboard
             case sf::Event::KeyPressed:
-                if (event.key.code == sf::Keyboard::Escape)
+                switch (event.key.code)
                 {
-                    if (firstPoint != nullptr)
-                    {
+                    case sf::Keyboard::Escape:
                         raysVisible = true;
-
+                        
                         delete firstPoint;
                         firstPoint = nullptr;
-                    }
+                        break;
+                    
+                    case sf::Keyboard::RControl:
+                    case sf::Keyboard::LControl:
+                        isCtrlPressed = true;
+                        if (firstPoint == nullptr)
+                        {
+                            nearestWall = lookUpNearestWall(mousePosition);
+                        }
+                        break;
                 }
+
+                break;
+
+            case sf::Event::KeyReleased:
+                switch (event.key.code)
+                {
+                    case sf::Keyboard::RControl:
+                    case sf::Keyboard::LControl:
+                        isCtrlPressed = false;
+                        nearestWall = nullptr;
+                        break;
+                }
+                
         }
     }
+}
+
+Wall* Canvas::lookUpNearestWall(sf::Vector2f& point, float maxDistance)
+{
+    float x0 = point.x;
+    float y0 = point.y;
+
+    float minDistance = std::numeric_limits<float>::max();
+    Wall* minWall = nullptr;
+
+    float mint = minDistance;
+
+
+    for (Wall& wall : walls)
+    {
+        bool isBoundary = std::find(boundaryWalls.begin(), boundaryWalls.end(), wall) != boundaryWalls.end(); 
+        if (isBoundary) continue; // Ignore bounds
+
+        float x1 = wall.getA().x;
+        float y1 = wall.getA().y;
+        float x2 = wall.getB().x;
+        float y2 = wall.getB().y;
+        
+        float lengthSquared = powf(x2 - x1, 2) + powf(y2 - y1, 2);
+
+        // Normalized distance along the line (wall) segment
+        float t = ((x0 - x1) * (x2 - x1) + (y0 - y1) * (y2 - y1)) / lengthSquared;
+
+        // If it's less than 0 and greater than 1, it's beyond the line
+        if (t < 0 || t > 1) continue;
+
+        float distance = std::abs((x2 - x1) * (y1 - y0) - (x1 - x0) * (y2 - y1)) /
+                            sqrt(lengthSquared);
+
+        if (distance < minDistance)
+        {
+            minDistance = distance;
+            minWall = &wall;
+        }
+    }
+
+    if (minDistance > maxDistance)
+    {
+        minWall = nullptr;
+    }
+
+    return minWall;
+
 }
 
 void Canvas::updateIntersections()
