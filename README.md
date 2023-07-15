@@ -7,7 +7,9 @@ The program simulates the casting of shadows in a 2D environment based on the ra
 
 ## Features
 + **Dynamic ray source**: Move the mouse to control the source of the rays.
-+ **Interactive wall creation**: Left-click once to set the starting point, and click again to set the ending point, creating a wall segment.
++ **Interactive wall creation**: `Left-click` once to set the starting point, and **click again** to set the ending point, creating a wall segment.  
+`Esc` to cancel new wall.
+
     ![wall creation](https://github.com/Francisco-GV/2DShadowCast/assets/54688495/c954dd49-77cd-43e8-9457-87c48c06c822)
 
 

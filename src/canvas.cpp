@@ -98,12 +98,26 @@ void Canvas::draw()
 
     // Draw new wall
     if (firstPoint != nullptr)
-    {
+    {   
         sf::Vertex newWallLines[]
         {
             sf::Vertex(*firstPoint, config::newWallColor),
             sf::Vertex(mousePosition, config::newWallColor)
         };
+
+        sf::CircleShape dot(2);
+        dot.setFillColor(config::newWallColor);
+
+        sf::Vector2f dotPosition(firstPoint->x - dot.getRadius(), firstPoint->y - dot.getRadius());
+
+        dot.setPosition(dotPosition);
+        window.draw(dot);
+
+        dotPosition.x = mousePosition.x - dot.getRadius();
+        dotPosition.y = mousePosition.y - dot.getRadius();
+
+        dot.setPosition(dotPosition);
+        window.draw(dot);
 
         window.draw(newWallLines, 2, sf::Lines);
     }
@@ -137,7 +151,6 @@ void Canvas::manageEvents()
             
             // Mouse
             case sf::Event::MouseButtonPressed:
-                
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
                     if (firstPoint == nullptr)
@@ -155,8 +168,20 @@ void Canvas::manageEvents()
                         firstPoint = nullptr;
                     }
                 }
-                
                 break;
+            
+            // Keyboard
+            case sf::Event::KeyPressed:
+                if (event.key.code == sf::Keyboard::Escape)
+                {
+                    if (firstPoint != nullptr)
+                    {
+                        raysVisible = true;
+
+                        delete firstPoint;
+                        firstPoint = nullptr;
+                    }
+                }
         }
     }
 }
