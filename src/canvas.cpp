@@ -25,6 +25,8 @@ sf::ContextSettings Canvas::createContextSettings()
 Canvas::Canvas() : window(sf::VideoMode(config::winWidth, config::winHeight), 
         config::winTitle, sf::Style::Titlebar | sf::Style::Close, createContextSettings())
 {   
+    window.setFramerateLimit(config::framerateLimit);
+
     clickCursor.loadFromSystem(sf::Cursor::Hand);
     defaultCursor.loadFromSystem(sf::Cursor::Arrow);
     isCtrlPressed = false;

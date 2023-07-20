@@ -11,9 +11,10 @@ namespace config
 
     /* Window */
     std::string winTitle = "2DShadowCast | C++/SFML";
-    unsigned int winWidth = 640; 
-    unsigned int winHeight = 360; 
-    bool antialiasing = true;    
+    unsigned int winWidth = 640;
+    unsigned int winHeight = 360;
+    bool antialiasing = true;
+    unsigned int framerateLimit = 60;
 
     /* Color */
     sf::Color bgColor = sf::Color::Black;
