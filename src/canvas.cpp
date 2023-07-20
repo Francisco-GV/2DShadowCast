@@ -1,9 +1,14 @@
-#include "canvas.h"
-#include "config.h"
 #include <cmath>
 #include <limits>
 #include <algorithm>
-#include <array>
+#include <vector>
+
+#include <SFML/Graphics.hpp>
+
+#include "canvas.h"
+#include "config.h"
+#include "wall.h"
+#include "ray.h"
 
 sf::ContextSettings Canvas::createContextSettings()
 {
@@ -20,6 +25,8 @@ sf::ContextSettings Canvas::createContextSettings()
 Canvas::Canvas() : window(sf::VideoMode(config::winWidth, config::winHeight), 
         config::winTitle, sf::Style::Titlebar | sf::Style::Close, createContextSettings())
 {   
+    clickCursor.loadFromSystem(sf::Cursor::Hand);
+    defaultCursor.loadFromSystem(sf::Cursor::Arrow);
     isCtrlPressed = false;
 
     // Load predefined walls
@@ -187,15 +194,17 @@ void Canvas::manageEvents()
                         {
                             raysVisible = false;
                             firstPoint = new sf::Vector2f(mousePosition);
+                            window.setMouseCursor(clickCursor);
                         }
                         else // if firstPoint != nullptr
                         {
-                            walls.emplace_back(*firstPoint, mousePosition);
-                            
                             raysVisible = true;
+                            walls.emplace_back(*firstPoint, mousePosition);                
 
                             delete firstPoint;
                             firstPoint = nullptr;
+                            
+                            window.setMouseCursor(defaultCursor);
                         }
                     }                    
                 }
@@ -211,17 +220,28 @@ void Canvas::manageEvents()
                         delete firstPoint;
                         firstPoint = nullptr;
                         break;
-                    
+                        
                     case sf::Keyboard::RControl:
                     case sf::Keyboard::LControl:
                         isCtrlPressed = true;
                         if (firstPoint == nullptr)
                         {
                             nearestWall = lookUpNearestWall(mousePosition);
+
+                            if (nearestWall != nullptr)
+                            {
+                                window.setMouseCursor(clickCursor);
+                            }
+                            else
+                            {
+                                window.setMouseCursor(defaultCursor);
+                            }
                         }
                         break;
+                    case sf::Keyboard::T: // Toggle
+                        raysVisible =! raysVisible;
+                        break;
                 }
-
                 break;
 
             case sf::Event::KeyReleased:
@@ -231,9 +251,9 @@ void Canvas::manageEvents()
                     case sf::Keyboard::LControl:
                         isCtrlPressed = false;
                         nearestWall = nullptr;
+                        window.setMouseCursor(defaultCursor);
                         break;
                 }
-                
         }
     }
 }

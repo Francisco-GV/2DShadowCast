@@ -2,8 +2,9 @@
 #define CANVAS_H
 
 #include <vector>
-#include <array>
-#include "SFML/Graphics.hpp"
+
+#include <SFML/Graphics.hpp>
+
 #include "wall.h"
 #include "ray.h"
 
@@ -25,6 +26,8 @@ private:
     sf::Vector2f* firstPoint = nullptr;
     Wall* nearestWall = nullptr;
 
+    sf::Cursor clickCursor;
+    sf::Cursor defaultCursor;
     bool isCtrlPressed;
 
     Wall* lookUpNearestWall(sf::Vector2f& point, float maxDistance = 5.f);
