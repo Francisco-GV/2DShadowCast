@@ -13,8 +13,23 @@ The program simulates the casting of shadows in a 2D environment based on the ra
     + `Esc` to cancel new wall.
     + `Ctrl + Left-click` to delete walls.
 
-    ![wall creation](https://github.com/Francisco-GV/2DShadowCast/assets/54688495/c954dd49-77cd-43e8-9457-87c48c06c822)
+![wall creation](https://github.com/Francisco-GV/2DShadowCast/assets/54688495/c954dd49-77cd-43e8-9457-87c48c06c822)
 
+## Configuration File
+You can use a configuration file to modify certain values without the need of modify/recompile the code.  
+1. Create a file named `config.txt` in the root of the project (will be copied to build during CMake configuration) or directly in the CMake build directory.
+2. Write in each line the values, in the format `<attribute-name>=<value>` e.g. `winWidth=640`
+
+(You can also examine/modify the existing one with the default values)
+
+### Existing attributes (for now)
+| Attribute      | Description                           | Default | Type         |
+|----------------|---------------------------------------|---------|--------------|
+| nRays          | Set number of rays                    | 360     | unsigned int |
+| winWidth       | Set width of window                   | 640     | unsigned int |
+| winHeight      | Set height of window                  | 360     | unsigned int |
+| antialiasing   | Enable antialiasing  (smooth drawing) | true    | bool         |
+| framerateLimit | Specify FPS limit                     | 60      | unsigned int |
 
 ## Installation
 
