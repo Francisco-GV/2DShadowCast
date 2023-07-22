@@ -1,5 +1,6 @@
 nRays=360
 winWidth=640
 winHeight=360
-antialiasing=true
 framerateLimit=60
+antialiasing=true
+showPolygons=true

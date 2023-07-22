@@ -32,14 +32,17 @@ Canvas::Canvas() : window(sf::VideoMode(config::winWidth, config::winHeight),
     isCtrlPressed = false;
 
     // Load predefined walls
-    for (std::vector<std::vector<float>> v1 : config::predefinedPolygons)
+    if (config::showPredefinedPolygons)
     {
-        float ax = v1[0][0];
-        float ay = v1[0][1];
-        float bx = v1[1][0];
-        float by = v1[1][1];
+        for (std::vector<std::vector<float>> v1 : config::predefinedPolygons)
+        {
+            float ax = v1[0][0];
+            float ay = v1[0][1];
+            float bx = v1[1][0];
+            float by = v1[1][1];
 
-        walls.emplace_back(ax, ay, bx, by);
+            walls.emplace_back(ax, ay, bx, by);
+        }
     }
 
     // Create boundary walls

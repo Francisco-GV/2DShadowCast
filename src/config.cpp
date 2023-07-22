@@ -1,17 +1,33 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <algorithm>
+#include <cctype>
 
 #include "config.h"
 
 namespace config
 {
-    namespace
+    namespace // Utility functions
     {
         void trimString(std::string& s, const std::string& characters = " \t\n\r\f\v")
         {
             s.erase(0, s.find_first_not_of(characters));
             s.erase(s.find_last_not_of(characters) + 1);
+        }
+
+        bool isNumber(std::string& s)
+        {
+            return !s.empty() && std::find_if(s.begin(), s.end(), 
+                [](unsigned char c) {return !std::isdigit(c);}) == s.end();
+        }
+
+        bool validateBool(std::string& s)
+        {
+            if (s.empty()) return false;
+            std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+
+            return (s == "true");
         }
     }
 
@@ -37,12 +53,13 @@ namespace config
 
                 trimString(attribute);
                 trimString(value);
-                
-                if (attribute == "nRays")               nRays           = std::stoi(value);
-                else if (attribute == "winWidth")       winWidth        = std::stoi(value); 
-                else if (attribute == "winHeight")      winHeight       = std::stoi(value);
-                else if (attribute == "antialiasing")   antialiasing    = value == "true";
-                else if (attribute == "framerateLimit") framerateLimit  = std::stoi(value);
+
+                if (attribute == "nRays")               nRays          = isNumber(value) ? std::stoi(value) : nRays;
+                else if (attribute == "winWidth")       winWidth       = isNumber(value) ? std::stoi(value) : winWidth;
+                else if (attribute == "winHeight")      winHeight      = isNumber(value) ? std::stoi(value) : winHeight;
+                else if (attribute == "framerateLimit") framerateLimit = isNumber(value) ? std::stoi(value) : framerateLimit;
+                else if (attribute == "antialiasing")   antialiasing   = validateBool(value);
+                else if (attribute == "showPolygons")   showPredefinedPolygons = validateBool(value);
             }
         }
     }
@@ -52,6 +69,7 @@ namespace config
     std::string configFileName = "config.txt";
 
     unsigned int nRays = 360;
+    bool showPredefinedPolygons = true;
 
     /* Window */
     std::string winTitle = "2DShadowCast | C++/SFML";

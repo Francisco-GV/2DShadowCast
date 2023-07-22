@@ -28,8 +28,9 @@ You can use a configuration file to modify certain values without the need of mo
 | nRays          | Set number of rays                    | 360     | unsigned int |
 | winWidth       | Set width of window                   | 640     | unsigned int |
 | winHeight      | Set height of window                  | 360     | unsigned int |
-| antialiasing   | Enable antialiasing  (smooth drawing) | true    | bool         |
 | framerateLimit | Specify FPS limit                     | 60      | unsigned int |
+| antialiasing   | Enable antialiasing  (smooth drawing) | true    | bool         |
+| showPolygons   | Show predefined polygons at start     | true    | bool         |
 
 ## Installation
 

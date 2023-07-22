@@ -11,6 +11,7 @@ namespace config
     extern std::string configFileName;
 
     extern unsigned int nRays;
+    extern bool showPredefinedPolygons;
 
     /* Window */
     extern std::string winTitle;
