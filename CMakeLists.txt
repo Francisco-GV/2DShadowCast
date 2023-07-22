@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(2DShadowCast VERSION 1.1.0 LANGUAGES CXX)
 
-set(SOURCES src/main.cpp src/canvas.cpp src/wall.cpp src/ray.cpp)
+set(SOURCES src/main.cpp src/canvas.cpp src/wall.cpp src/ray.cpp src/config.cpp)
 add_executable(2DShadowCast ${SOURCES})
 target_include_directories(2DShadowCast PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
