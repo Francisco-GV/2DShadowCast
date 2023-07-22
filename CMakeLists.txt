@@ -17,3 +17,9 @@ foreach (lib ${SFML_LIBS})
     get_target_property(lib_path ${lib} LOCATION)
     file(COPY ${lib_path} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 endforeach()
+
+# Copy config.txt to build directory
+set(CONFIG_FILE config.txt)
+if (EXISTS "${CMAKE_SOURCE_DIR}/${CONFIG_FILE}")
+    file(COPY "${CMAKE_SOURCE_DIR}/${CONFIG_FILE}" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+endif()

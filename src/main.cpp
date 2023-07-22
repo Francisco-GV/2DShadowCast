@@ -1,8 +1,10 @@
 #include "canvas.h"
+#include "config.h"
 
 int main()
 {
-    Canvas canvas;
+    config::loadConfigFile();
 
+    Canvas canvas;
     canvas.start();
 }
