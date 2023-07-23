@@ -69,7 +69,8 @@ Canvas::Canvas() : window(sf::VideoMode(config::winWidth, config::winHeight),
 
 void Canvas::start()
 {
-    for (int i = 0; i < config::nRays; i++)
+    float angleStep = 360.f / config::nRays;
+    for (float i = 0; i < 360.f; i += angleStep)
     {
         float rad = i * config::PI / 180.f;
         Ray ray(window.getSize().x / 2.f, window.getSize().y / 2.f, rad);
