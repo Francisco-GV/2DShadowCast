@@ -2,6 +2,7 @@
 #define CANVAS_H
 
 #include <vector>
+#include <utility>
 
 #include <SFML/Graphics.hpp>
 
@@ -30,7 +31,7 @@ private:
     sf::Cursor defaultCursor;
     bool isCtrlPressed;
 
-    Wall* lookUpNearestWall(sf::Vector2f& point, float maxDistance = 5.f);
+    std::pair<Wall*, sf::Vector2i> lookUpNearestWall(sf::Vector2f& point, float maxDistance = 5.f);
     void updateIntersections();
     void manageEvents();
     static sf::ContextSettings createContextSettings();

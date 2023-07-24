@@ -2,6 +2,8 @@
 #include <limits>
 #include <algorithm>
 #include <vector>
+#include <utility>
+#include <iostream>
 
 #include <SFML/Graphics.hpp>
 
@@ -232,7 +234,7 @@ void Canvas::manageEvents()
                         isCtrlPressed = true;
                         if (firstPoint == nullptr)
                         {
-                            nearestWall = lookUpNearestWall(mousePosition);
+                            nearestWall = lookUpNearestWall(mousePosition).first;
 
                             if (nearestWall != nullptr)
                             {
@@ -244,6 +246,21 @@ void Canvas::manageEvents()
                             }
                         }
                         break;
+                    
+                    case sf::Keyboard::LShift:
+                    case sf::Keyboard::RShift:
+                        raysVisible = false;
+                        {
+                            std::pair<Wall*, sf::Vector2i> pair = lookUpNearestWall(mousePosition);
+                            Wall* wall = pair.first;
+                            
+                            if (wall != nullptr)
+                            {
+                                sf::Mouse::setPosition(pair.second, window);
+                            }
+                        }
+                        break;
+
                     case sf::Keyboard::T: // Toggle
                         raysVisible =! raysVisible;
                         break;
@@ -259,22 +276,25 @@ void Canvas::manageEvents()
                         nearestWall = nullptr;
                         window.setMouseCursor(defaultCursor);
                         break;
+                    
+                    case sf::Keyboard::LShift:
+                    case sf::Keyboard::RShift:
+                        raysVisible = true;
                 }
         }
     }
 }
 
-Wall* Canvas::lookUpNearestWall(sf::Vector2f& point, float maxDistance)
+std::pair<Wall*, sf::Vector2i> Canvas::lookUpNearestWall(sf::Vector2f& point, float maxDistance)
 {
     float x0 = point.x;
     float y0 = point.y;
 
     float minDistance = std::numeric_limits<float>::max();
     Wall* minWall = nullptr;
+    float minT = std::numeric_limits<float>::max();
 
-    float mint = minDistance;
-
-
+    // Determine what is the wall with the nearest distance
     for (Wall& wall : walls)
     {
         bool isBoundary = std::find(boundaryWalls.begin(), boundaryWalls.end(), wall) != boundaryWalls.end(); 
@@ -300,16 +320,28 @@ Wall* Canvas::lookUpNearestWall(sf::Vector2f& point, float maxDistance)
         {
             minDistance = distance;
             minWall = &wall;
+            minT = t;
         }
     }
 
-    if (minDistance > maxDistance)
+    sf::Vector2i intersectionPoint;
+    
+    if (minDistance <= maxDistance)
+    {
+        float x1 = minWall->getA().x;
+        float x2 = minWall->getB().x;
+        float y1 = minWall->getA().y;
+        float y2 = minWall->getB().y;
+
+        intersectionPoint.x = std::round(x1 + minT * (x2 - x1));
+        intersectionPoint.y = std::round(y1 + minT * (y2 - y1));
+    }
+    else
     {
         minWall = nullptr;
     }
 
-    return minWall;
-
+    return std::pair<Wall*, sf::Vector2i>(minWall, intersectionPoint);
 }
 
 void Canvas::updateIntersections()

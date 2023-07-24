@@ -9,9 +9,10 @@ The program simulates the casting of shadows in a 2D environment based on the ra
 + **Dynamic ray source**: Move the mouse to control the source of the rays.
 + **Interactive wall creation**: 
     + `T` to toggle rays source.
-    + `Left-click` to create new walls: **once** to set the starting point, and **click again** elsewhere to set the ending point.
+    + `Left-click` to create new walls: **click** to set the starting point, and **click again** elsewhere to set the ending point.
     + `Esc` to cancel new wall.
-    + `Ctrl + Left-click` to delete walls.
+    + `Ctrl + Left-click` to delete existing wall.
+    + `Shift` to snap the cursor to nearest wall (precise placement).
 
 ![wall creation](https://github.com/Francisco-GV/2DShadowCast/assets/54688495/c954dd49-77cd-43e8-9457-87c48c06c822)
 
