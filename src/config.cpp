@@ -3,6 +3,9 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
+#include <filesystem>
+
+#include <SFML/Graphics.hpp>
 
 #include "config.h"
 
@@ -33,7 +36,9 @@ namespace config
 
     void loadConfigFile()
     {
-        std::ifstream configFile(configFileName);
+        std::filesystem::path filePath = std::filesystem::current_path() / configFileName;
+
+        std::ifstream configFile(filePath);
 
         if (!configFile)
         {
