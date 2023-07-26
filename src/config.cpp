@@ -32,6 +32,82 @@ namespace config
 
             return (s == "true");
         }
+
+        std::vector<std::string> split(std::string& s, std::string delimiter)
+        {
+            std::vector<std::string> splitted;
+
+            size_t delimiterSize = delimiter.length();
+            size_t start = 0;
+            size_t end = 0;
+
+            std::string token;
+            while ((end = s.find(delimiter, start)) != std::string::npos)
+            {
+                token = s.substr(start, end-start);
+                trimString(token);
+                splitted.push_back(token);
+                
+                start = end + delimiterSize;
+            }
+            token = s.substr(start);
+            trimString(token);
+            splitted.push_back(token);
+
+            return splitted;
+        }
+
+        sf::Color parseColor(std::string& s)
+        {
+            int r = 0;
+            int g = 0;
+            int b = 0;
+            int a = 255;
+
+            //255,255,255
+            std::vector<std::string> splitted = split(s, std::string(","));
+            size_t size = splitted.size();
+            
+            if (size == 1 || size == 2)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    if (isNumber(splitted[i]))
+                    {
+                        int number = std::stoi(splitted[i]);
+                        if (number >= 0 && number <= 255)
+                        {
+                            if (i == 0)
+                            {
+                                r = number;
+                                g = number;
+                                b = number;
+                            }
+                            else if (i == 1) a = number;
+                        }
+                    }
+                }
+            }
+            else if (size == 3 || size == 4)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    if (isNumber(splitted[i]))
+                    {
+                        int number = std::stoi(splitted[i]);
+                        if (number >= 0 && number <= 255)
+                        {
+                            if      (i == 0) r = number;
+                            else if (i == 1) g = number;
+                            else if (i == 2) b = number;
+                            else if (i == 3) a = number;
+                        }
+                    } 
+                }
+            }
+
+            return sf::Color(r, g, b, a);
+        }
     }
 
     void loadConfigFile()
@@ -65,6 +141,11 @@ namespace config
                 else if (attribute == "framerateLimit") framerateLimit = isNumber(value) ? std::stoi(value) : framerateLimit;
                 else if (attribute == "antialiasing")   antialiasing   = validateBool(value);
                 else if (attribute == "showPolygons")   showPredefinedPolygons = validateBool(value);
+                else if (attribute == "bgColor")        bgColor        = parseColor(value);
+                else if (attribute == "wallsColor")     wallsColor     = parseColor(value);
+                else if (attribute == "raysColor")      raysColor      = parseColor(value);
+                else if (attribute == "newWallColor")   newWallColor   = parseColor(value);
+                else if (attribute == "nearestWallColor") nearestWallColor = parseColor(value);
             }
         }
     }

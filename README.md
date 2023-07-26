@@ -24,14 +24,22 @@ You can use a configuration file to modify certain values without the need of mo
 (You can also examine/modify the existing one with the default values)
 
 ### Existing attributes (for now)
-| Attribute      | Description                           | Default | Type         |
-|----------------|---------------------------------------|---------|--------------|
-| nRays          | Set number of rays                    | 360     | unsigned int |
-| winWidth       | Set width of window                   | 640     | unsigned int |
-| winHeight      | Set height of window                  | 360     | unsigned int |
-| framerateLimit | Specify FPS limit                     | 60      | unsigned int |
-| antialiasing   | Enable antialiasing  (smooth drawing) | true    | bool         |
-| showPolygons   | Show predefined polygons at start     | true    | bool         |
+| Attribute        | Description                             | Default            | Type         |
+|------------------|-----------------------------------------|--------------------|--------------|
+| nRays            | Set number of rays                      | 360                | unsigned int |
+| winWidth         | Set width of window                     | 640                | unsigned int |
+| winHeight        | Set height of window                    | 360                | unsigned int |
+| framerateLimit   | Specify FPS limit                       | 60                 | unsigned int |
+| antialiasing     | Enable antialiasing  (smooth drawing)   | true               | bool         |
+| showPolygons     | Show predefined polygons at start       | true               | bool         |
+| bgColor          | Set background color                    | 0                  | rgba*        |
+| wallsColor       | Set the color of walls                  | 255                | rgba*        |
+| raysColor        | Set the color of rays                   | 255, 255, 255, 100 | rgba*        |
+| newWallColor     | Set the color of the wall being created | 255, 255, 0        | rgba*        |
+| nearestWallColor | Set the color of the wall to delete     | 255, 0, 0          | rgba*        |
+
+<sub>[*]: The format is **r[,g,b][,a]**. Values outside the range 0-255 will be treated as 0 (255 in alpha).
+An input with more than 4 values will be ignored and **black** (0, 0, 0, 255) will be used. </sub>
 
 ## Installation
 
