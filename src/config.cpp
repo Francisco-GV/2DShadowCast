@@ -3,7 +3,6 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
-#include <filesystem>
 
 #include <SFML/Graphics.hpp>
 
@@ -108,11 +107,21 @@ namespace config
 
             return sf::Color(r, g, b, a);
         }
+
+        std::string getDirectoryPath(char* path)
+        {
+            std::string strPath(path);
+            
+            size_t pos = strPath.find_last_of("\\");
+            strPath.erase(pos);
+
+            return strPath;
+        }
     }
 
-    void loadConfigFile()
+    void loadConfigFile(char* argPath)
     {
-        std::filesystem::path filePath = std::filesystem::current_path() / configFileName;
+        std::string filePath = getDirectoryPath(argPath) + "\\" + configFileName;
 
         std::ifstream configFile(filePath);
 

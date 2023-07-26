@@ -3,11 +3,12 @@
 
 #include <string>
 #include <vector>
-#include "SFML/Graphics.hpp"
+
+#include <SFML/Graphics.hpp>
 
 namespace config
 {
-    void loadConfigFile();
+    void loadConfigFile(char* argPath);
     extern std::string configFileName;
 
     extern unsigned int nRays;
@@ -35,4 +36,4 @@ namespace config
     constexpr double PI = 3.14159265358979323846264338327950288;
 }
 
-#endif  
+#endif

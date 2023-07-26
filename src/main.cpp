@@ -1,9 +1,9 @@
 #include "canvas.h"
 #include "config.h"
 
-int main()
+int main(int argc, char** argv)
 {
-    config::loadConfigFile();
+    config::loadConfigFile(argv[0]);
 
     Canvas canvas;
     canvas.start();
