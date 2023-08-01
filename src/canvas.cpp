@@ -71,14 +71,14 @@ Canvas::Canvas() : window(sf::VideoMode(config::winWidth, config::winHeight),
 
 void Canvas::start()
 {
-    float angleStep = 360.f / config::nRays;
-    for (float i = 0; i < 360.f; i += angleStep)
-    {
-        float rad = i * config::PI / 180.f;
-        Ray ray(window.getSize().x / 2.f, window.getSize().y / 2.f, rad);
+        float angleStep = 360.f / config::nRays;
+        for (float i = 0; i < 360.f; i += angleStep)
+        {
+            float rad = i * config::PI / 180.f;
+            Ray ray(window.getSize().x / 2.f, window.getSize().y / 2.f, rad);
 
-        rays.push_back(ray);
-    }
+            rays.push_back(ray);
+        }
 
     while (window.isOpen())
     {
@@ -380,7 +380,7 @@ void Canvas::updateIntersections()
 
         if (minimum != nullptr)
         {
-            ray.setDirectionPoint(minimum->first.x, minimum->first.y);
+            ray.setDirectionPoint(minimum->first);
         }
 
         delete minimum;

@@ -14,7 +14,7 @@ public:
     std::pair<sf::Vector2f, float>* calculateIntersection(Wall& wall);
     void setPosition(float x, float y);
     sf::Vector2f getPosition();
-    void setDirectionPoint(float x, float y);
+    void setDirectionPoint(sf::Vector2f point);
     sf::Vector2f getDirection();
     void setAngle(float a);
 private:

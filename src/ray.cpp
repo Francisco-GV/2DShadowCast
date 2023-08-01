@@ -1,13 +1,13 @@
 #include "ray.h"
 
-Ray::Ray(float x, float y, float angle) : startingPoint(x, y), angle(angle)
+Ray::Ray(float x, float y, float angle) : startingPoint(x, y)
 {
-    calculateDirection();
+    setAngle(angle);
 }
 
-Ray::Ray(float x, float y, sf::Vector2f directionPoint) : startingPoint(x, y), direction(directionPoint)
+Ray::Ray(float x, float y, sf::Vector2f directionPoint) : startingPoint(x, y)
 {
-    calculateAngle();
+    setDirectionPoint(directionPoint);
 }
 
 
@@ -30,10 +30,9 @@ void Ray::setPosition(float x, float y)
     calculateAngle();
 }
 
-void Ray::setDirectionPoint(float x, float y)
+void Ray::setDirectionPoint(sf::Vector2f point)
 {
-    direction.x = x;
-    direction.y = y;
+    direction = point;
 
     calculateAngle();
 }
