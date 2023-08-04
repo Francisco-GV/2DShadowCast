@@ -33,6 +33,7 @@ private:
 
     std::pair<Wall*, sf::Vector2i> lookUpNearestWall(sf::Vector2f& point, float maxDistance = 5.f);
     void updateIntersections();
+    void updateSmartRays();
     void manageEvents();
     static sf::ContextSettings createContextSettings();
 };

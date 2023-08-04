@@ -10,19 +10,29 @@ class Ray
 {
 public:
     Ray(float x, float y, float angle);
-    Ray(float x, float y, sf::Vector2f directionPoint);
+    Ray(float x, float y, sf::Vector2f directionPoint, bool fixed, float offset = 0.f);
+
     std::pair<sf::Vector2f, float>* calculateIntersection(Wall& wall);
     void setPosition(float x, float y);
-    sf::Vector2f getPosition();
     void setDirectionPoint(sf::Vector2f point);
-    sf::Vector2f getDirection();
     void setAngle(float a);
+    void setIntersectionPoint(sf::Vector2f point);
+    sf::Vector2f getDirection();
+    sf::Vector2f getPosition();
+    sf::Vector2f getIntersectionPoint();
+    float getAngle();
+    float getOffset();
 private:
     float angle; // Radians
-    sf::Vector2f startingPoint; 
-    sf::Vector2f direction;
+    float offset;
+    bool fixed = true;
+    sf::Vector2f startingPoint;
+    sf::Vector2f directionPoint;
+    sf::Vector2f finalPoint;
+    sf::Vector2f intersectionPoint;
     void calculateDirection();
     void calculateAngle();
+    void calculateFinalPoint();
 };
 
 #endif

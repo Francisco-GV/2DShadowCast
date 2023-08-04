@@ -163,6 +163,7 @@ namespace config
 
     std::string configFileName = "config.txt";
 
+    bool smartRays = true;
     unsigned int nRays = 360;
     bool showPredefinedPolygons = true;
 

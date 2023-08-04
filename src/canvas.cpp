@@ -71,6 +71,23 @@ Canvas::Canvas() : window(sf::VideoMode(config::winWidth, config::winHeight),
 
 void Canvas::start()
 {
+    if (config::smartRays)
+    {
+        float offset = 0.0001f;
+        for (Wall wall : walls)
+        {
+            rays.push_back(Ray(0, 0, wall.getA(), false, -offset));
+            rays.push_back(Ray(0, 0, wall.getB(), false, -offset));
+
+            rays.push_back(Ray(0, 0, wall.getA(), false));
+            rays.push_back(Ray(0, 0, wall.getB(), false));
+
+            rays.push_back(Ray(0, 0, wall.getA(), false, offset));
+            rays.push_back(Ray(0, 0, wall.getB(), false, offset));
+        }
+    }
+    else
+    {
         float angleStep = 360.f / config::nRays;
         for (float i = 0; i < 360.f; i += angleStep)
         {
@@ -79,6 +96,7 @@ void Canvas::start()
 
             rays.push_back(ray);
         }
+    }
 
     while (window.isOpen())
     {
@@ -115,18 +133,34 @@ void Canvas::draw()
         // Over drawn
         window.draw(lineLines, 2, sf::Lines);
     }
-
     // Draw rays
     if (raysVisible)
     {
+        if (config::smartRays)
+        {
+            size_t size = rays.size() + 2;
+
+            sf::Vertex vertices[size];
+
+            vertices[0] = sf::Vertex(mousePosition, config::raysColor);
+
+            for (int i = 0; i < size - 2; i++)
+            {
+                vertices[i + 1] = sf::Vertex(rays[i].getIntersectionPoint(), config::raysColor);
+            }
+
+            if (rays.size() != 0) vertices[size - 1] = vertices[1];
+
+            window.draw(vertices, size, sf::TriangleFan);
+        }
+        
         for (Ray& ray : rays)
         {
             sf::Vertex rayLines[]
             {
                 sf::Vertex(ray.getPosition(), config::raysColor),
-                sf::Vertex(ray.getDirection(), config::raysColor)
+                sf::Vertex(ray.getIntersectionPoint(), config::raysColor)
             };
-
             window.draw(rayLines, 2, sf::Lines);
         }
     }
@@ -169,7 +203,16 @@ void Canvas::update()
     if (raysVisible)
     {
         updateIntersections();
+        if (config::smartRays) updateSmartRays();
     }
+}
+
+void Canvas::updateSmartRays()
+{
+    std::sort(rays.begin(), rays.end(), [](Ray& a, Ray& b) 
+    { 
+        return a.getAngle() < b.getAngle();
+    });
 }
 
 void Canvas::manageEvents()
@@ -380,7 +423,7 @@ void Canvas::updateIntersections()
 
         if (minimum != nullptr)
         {
-            ray.setDirectionPoint(minimum->first);
+            ray.setIntersectionPoint(minimum->first);
         }
 
         delete minimum;
