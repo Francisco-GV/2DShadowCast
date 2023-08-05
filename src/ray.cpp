@@ -26,7 +26,7 @@ sf::Vector2f Ray::getIntersectionPoint()
     return intersectionPoint;
 }
 
-float Ray::getAngle()
+float Ray::getAngle() const
 {
     return angle + offset;
 }
@@ -134,4 +134,14 @@ std::pair<sf::Vector2f, float>* Ray::calculateIntersection(Wall& wall)
     }
 
     return nullptr;
+}
+
+bool Ray::operator<(const Ray& ray) const
+{
+    return getAngle() < ray.getAngle();
+}
+
+bool Ray::operator==(const Ray& ray) const
+{
+    return getAngle() == ray.getAngle();
 }

@@ -138,7 +138,7 @@ void Canvas::draw()
     {
         if (config::smartRays)
         {
-            size_t size = rays.size() + 2;
+            size_t size = optimizedRays.size() + 2;
 
             sf::Vertex vertices[size];
 
@@ -146,10 +146,10 @@ void Canvas::draw()
 
             for (int i = 0; i < size - 2; i++)
             {
-                vertices[i + 1] = sf::Vertex(rays[i].getIntersectionPoint(), config::raysColor);
+                vertices[i + 1] = sf::Vertex(optimizedRays[i].getIntersectionPoint(), config::raysColor);
             }
 
-            if (rays.size() != 0) vertices[size - 1] = vertices[1];
+            if (optimizedRays.size() != 0) vertices[size - 1] = vertices[1];
 
             window.draw(vertices, size, sf::TriangleFan);
         }
@@ -209,10 +209,14 @@ void Canvas::update()
 
 void Canvas::updateSmartRays()
 {
-    std::sort(rays.begin(), rays.end(), [](Ray& a, Ray& b) 
+    std::sort(rays.begin(), rays.end());
+    optimizeSmartRays();
+}
+
+void Canvas::optimizeSmartRays()
     { 
-        return a.getAngle() < b.getAngle();
-    });
+    optimizedRays.clear();
+    std::unique_copy(rays.begin(), rays.end(), std::back_inserter(optimizedRays));
 }
 
 void Canvas::manageEvents()

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <utility>
+#include <set>
 
 #include <SFML/Graphics.hpp>
 
@@ -19,6 +20,7 @@ public:
 private:
     sf::RenderWindow window;
     std::vector<Ray> rays;
+    std::vector<Ray> optimizedRays;
     std::vector<Wall> walls;
     std::vector<Wall> boundaryWalls;
 
@@ -34,6 +36,7 @@ private:
     std::pair<Wall*, sf::Vector2i> lookUpNearestWall(sf::Vector2f& point, float maxDistance = 5.f);
     void updateIntersections();
     void updateSmartRays();
+    void optimizeSmartRays();
     void manageEvents();
     static sf::ContextSettings createContextSettings();
 };

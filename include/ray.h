@@ -20,8 +20,11 @@ public:
     sf::Vector2f getDirection();
     sf::Vector2f getPosition();
     sf::Vector2f getIntersectionPoint();
-    float getAngle();
+    float getAngle() const;
     float getOffset();
+    // Operators
+    bool operator<(const Ray& ray) const;
+    bool operator==(const Ray& ray) const;
 private:
     float angle; // Radians
     float offset;
