@@ -30,6 +30,7 @@ You can use a configuration file to modify certain values without the need of mo
 | winWidth         | Set width of window                     | 640                | unsigned int |
 | winHeight        | Set height of window                    | 360                | unsigned int |
 | framerateLimit   | Specify FPS limit                       | 60                 | unsigned int |
+| smartRays        | Cast rays only to vertices              | false              | bool         |
 | antialiasing     | Enable antialiasing  (smooth drawing)   | true               | bool         |
 | showPolygons     | Show predefined polygons at start       | true               | bool         |
 | bgColor          | Set background color                    | 0                  | rgba*        |

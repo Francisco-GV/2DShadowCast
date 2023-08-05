@@ -3,6 +3,7 @@ winWidth=640
 winHeight=360
 framerateLimit=60
 antialiasing=true
+smartRays=false
 showPolygons=true
 bgColor=0
 wallsColor=255

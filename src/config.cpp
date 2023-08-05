@@ -148,6 +148,7 @@ namespace config
                 else if (attribute == "winWidth")       winWidth       = isNumber(value) ? std::stoi(value) : winWidth;
                 else if (attribute == "winHeight")      winHeight      = isNumber(value) ? std::stoi(value) : winHeight;
                 else if (attribute == "framerateLimit") framerateLimit = isNumber(value) ? std::stoi(value) : framerateLimit;
+                else if (attribute == "smartRays")      smartRays      = validateBool(value);
                 else if (attribute == "antialiasing")   antialiasing   = validateBool(value);
                 else if (attribute == "showPolygons")   showPredefinedPolygons = validateBool(value);
                 else if (attribute == "bgColor")        bgColor        = parseColor(value);
@@ -163,7 +164,7 @@ namespace config
 
     std::string configFileName = "config.txt";
 
-    bool smartRays = true;
+    bool smartRays = false;
     unsigned int nRays = 360;
     bool showPredefinedPolygons = true;
 
