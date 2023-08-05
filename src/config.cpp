@@ -149,6 +149,7 @@ namespace config
                 else if (attribute == "winHeight")      winHeight      = isNumber(value) ? std::stoi(value) : winHeight;
                 else if (attribute == "framerateLimit") framerateLimit = isNumber(value) ? std::stoi(value) : framerateLimit;
                 else if (attribute == "smartRays")      smartRays      = validateBool(value);
+                else if (attribute == "showSmartRays")  showSmartRays  = validateBool(value);
                 else if (attribute == "antialiasing")   antialiasing   = validateBool(value);
                 else if (attribute == "showPolygons")   showPredefinedPolygons = validateBool(value);
                 else if (attribute == "bgColor")        bgColor        = parseColor(value);
@@ -166,6 +167,7 @@ namespace config
 
     unsigned int nRays = 360;
     bool smartRays = false;
+    bool showSmartRays = false;
     float adjacentRaysOffset = 0.0001f;
     bool showPredefinedPolygons = true;
 

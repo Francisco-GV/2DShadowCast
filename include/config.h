@@ -13,6 +13,7 @@ namespace config
 
     extern unsigned int nRays;
     extern bool smartRays;
+    extern bool showSmartRays;
     extern float adjacentRaysOffset;
     extern bool showPredefinedPolygons;
 

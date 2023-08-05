@@ -154,14 +154,17 @@ void Canvas::draw()
             window.draw(vertices, size, sf::TriangleFan);
         }
         
-        for (Ray& ray : rays)
+        if (!config::smartRays || config::showSmartRays)
         {
-            sf::Vertex rayLines[]
+            for (Ray& ray : (config::smartRays) ? optimizedRays : rays)
             {
-                sf::Vertex(ray.getPosition(), config::raysColor),
-                sf::Vertex(ray.getIntersectionPoint(), config::raysColor)
-            };
-            window.draw(rayLines, 2, sf::Lines);
+                sf::Vertex rayLines[]
+                {
+                    sf::Vertex(ray.getPosition(), config::raysColor),
+                    sf::Vertex(ray.getIntersectionPoint(), config::raysColor)
+                };
+                window.draw(rayLines, 2, sf::Lines);
+            }
         }
     }
 
