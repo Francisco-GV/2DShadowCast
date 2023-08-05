@@ -50,7 +50,14 @@ void Ray::setPosition(float x, float y)
     }
     else
     {
-        calculateFinalPoint();
+        if (offset != 0.f)
+        {
+            calculateFinalPoint();
+        }
+        else
+        {
+            calculateAngle();
+        }
     }
 }
 
@@ -65,6 +72,7 @@ void Ray::setDirectionPoint(sf::Vector2f point)
     else
     {
         finalPoint = directionPoint;
+        calculateAngle();
     }
 }
 
