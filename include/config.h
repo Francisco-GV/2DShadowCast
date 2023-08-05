@@ -11,8 +11,9 @@ namespace config
     void loadConfigFile(char* argPath);
     extern std::string configFileName;
 
-    extern bool smartRays;
     extern unsigned int nRays;
+    extern bool smartRays;
+    extern float adjacentRaysOffset;
     extern bool showPredefinedPolygons;
 
     /* Window */

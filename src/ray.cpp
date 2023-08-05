@@ -1,5 +1,8 @@
-#include "ray.h"
 #include <iostream>
+#include <cmath>
+
+#include "ray.h"
+#include "config.h"
 
 Ray::Ray(float x, float y, float angle) : startingPoint(x, y)
 {
@@ -143,5 +146,5 @@ bool Ray::operator<(const Ray& ray) const
 
 bool Ray::operator==(const Ray& ray) const
 {
-    return getAngle() == ray.getAngle();
+    return fabs(getAngle() - ray.getAngle()) <= config::adjacentRaysOffset;
 }

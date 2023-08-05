@@ -73,7 +73,7 @@ void Canvas::start()
 {
     if (config::smartRays)
     {
-        float offset = 0.0001f;
+        float offset = config::adjacentRaysOffset;
         for (Wall wall : walls)
         {
             rays.push_back(Ray(0, 0, wall.getA(), false, -offset));
@@ -216,6 +216,7 @@ void Canvas::updateSmartRays()
 void Canvas::optimizeSmartRays()
     { 
     optimizedRays.clear();
+
     std::unique_copy(rays.begin(), rays.end(), std::back_inserter(optimizedRays));
 }
 

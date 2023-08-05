@@ -164,8 +164,9 @@ namespace config
 
     std::string configFileName = "config.txt";
 
-    bool smartRays = false;
     unsigned int nRays = 360;
+    bool smartRays = false;
+    float adjacentRaysOffset = 0.0001f;
     bool showPredefinedPolygons = true;
 
     /* Window */
