@@ -234,30 +234,36 @@ void Canvas::addWall(sf::Vector2f& a, sf::Vector2f& b)
 {
     Wall newWall = walls.emplace_back(a, b);
 
-    createSmartRays(newWall);
+    if (config::smartRays)
+    {
+        createSmartRays(newWall);
+    }
 }
 
 void Canvas::deleteWall(Wall& wall)
 {
-    sf::Vector2f a = wall.getA();
-    sf::Vector2f b = wall.getB();
-
-    // Delete the first three rays associated to each wall point
-    for (sf::Vector2f point : std::vector<sf::Vector2f> {a, b})
+    if (config::smartRays)
     {
-        for (int i = -1; i <= 1; i++)
+        sf::Vector2f a = wall.getA();
+        sf::Vector2f b = wall.getB();
+
+        // Delete the first three rays associated to each wall point
+        for (sf::Vector2f point : std::vector<sf::Vector2f> {a, b})
         {
-            float offset = config::adjacentRaysOffset * i;
-
-            auto predicate = [&point, &offset](Ray& ray) { 
-                return ray.getDirection() == point && ray.getOffset() == offset;
-            };
-
-            std::vector<Ray>::iterator it = std::find_if(rays.begin(), rays.end(), predicate);
-            
-            if (it != rays.end())
+            for (int i = -1; i <= 1; i++)
             {
-                it = rays.erase(it);
+                float offset = config::adjacentRaysOffset * i;
+
+                auto predicate = [&point, &offset](Ray& ray) { 
+                    return ray.getDirection() == point && ray.getOffset() == offset;
+                };
+
+                std::vector<Ray>::iterator it = std::find_if(rays.begin(), rays.end(), predicate);
+                
+                if (it != rays.end())
+                {
+                    it = rays.erase(it);
+                }
             }
         }
     }
