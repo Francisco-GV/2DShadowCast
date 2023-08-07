@@ -37,7 +37,11 @@ private:
     void updateIntersections();
     void updateSmartRays();
     void optimizeSmartRays();
+    void createSmartRays(Wall& wall);
     void manageEvents();
+    void deleteWall(Wall& wall);
+    void addWall(sf::Vector2f& a, sf::Vector2f& b);
+
     static sf::ContextSettings createContextSettings();
 };
 

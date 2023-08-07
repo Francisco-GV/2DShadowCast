@@ -73,17 +73,9 @@ void Canvas::start()
 {
     if (config::smartRays)
     {
-        float offset = config::adjacentRaysOffset;
         for (Wall wall : walls)
         {
-            rays.push_back(Ray(0, 0, wall.getA(), false, -offset));
-            rays.push_back(Ray(0, 0, wall.getB(), false, -offset));
-
-            rays.push_back(Ray(0, 0, wall.getA(), false));
-            rays.push_back(Ray(0, 0, wall.getB(), false));
-
-            rays.push_back(Ray(0, 0, wall.getA(), false, offset));
-            rays.push_back(Ray(0, 0, wall.getB(), false, offset));
+            createSmartRays(wall);
         }
     }
     else
@@ -223,6 +215,57 @@ void Canvas::optimizeSmartRays()
     std::unique_copy(rays.begin(), rays.end(), std::back_inserter(optimizedRays));
 }
 
+void Canvas::createSmartRays(Wall &wall)
+{
+    float offset = config::adjacentRaysOffset;
+
+    // Create three rays for each point, two of which have a small offset
+    rays.push_back(Ray(0, 0, wall.getA(), false, -offset));
+    rays.push_back(Ray(0, 0, wall.getB(), false, -offset));
+
+    rays.push_back(Ray(0, 0, wall.getA(), false));
+    rays.push_back(Ray(0, 0, wall.getB(), false));
+
+    rays.push_back(Ray(0, 0, wall.getA(), false, offset));
+    rays.push_back(Ray(0, 0, wall.getB(), false, offset));
+}
+
+void Canvas::addWall(sf::Vector2f& a, sf::Vector2f& b)
+{
+    Wall newWall = walls.emplace_back(a, b);
+
+    createSmartRays(newWall);
+}
+
+void Canvas::deleteWall(Wall& wall)
+{
+    sf::Vector2f a = wall.getA();
+    sf::Vector2f b = wall.getB();
+
+    // Delete the first three rays associated to each wall point
+    for (sf::Vector2f point : std::vector<sf::Vector2f> {a, b})
+    {
+        for (int i = -1; i <= 1; i++)
+        {
+            float offset = config::adjacentRaysOffset * i;
+
+            auto predicate = [&point, &offset](Ray& ray) { 
+                return ray.getDirection() == point && ray.getOffset() == offset;
+            };
+
+            std::vector<Ray>::iterator it = std::find_if(rays.begin(), rays.end(), predicate);
+            
+            if (it != rays.end())
+            {
+                it = rays.erase(it);
+            }
+        }
+    }
+
+    // Delete the wall from the vector
+    walls.erase(std::remove(walls.begin(), walls.end(), wall), walls.end());
+}
+
 void Canvas::manageEvents()
 {
     sf::Event event;
@@ -243,7 +286,7 @@ void Canvas::manageEvents()
                     {
                         if (nearestWall != nullptr)
                         {
-                            walls.erase(std::remove(walls.begin(), walls.end(), *nearestWall), walls.end());
+                            deleteWall(*nearestWall);
                             nearestWall = nullptr;
                         }
                     } 
@@ -258,7 +301,7 @@ void Canvas::manageEvents()
                         else // if firstPoint != nullptr
                         {
                             raysVisible = true;
-                            walls.emplace_back(*firstPoint, mousePosition);                
+                            addWall(*firstPoint, mousePosition);        
 
                             delete firstPoint;
                             firstPoint = nullptr;
