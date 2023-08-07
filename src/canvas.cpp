@@ -482,6 +482,10 @@ void Canvas::updateIntersections()
         {
             ray.setIntersectionPoint(minimum->first);
         }
+        else // This will only happen if the ray is out of bounds
+        {
+            ray.setIntersectionPoint(ray.getPosition());
+        }
 
         delete minimum;
     }
