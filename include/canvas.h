@@ -33,6 +33,11 @@ private:
     sf::Cursor defaultCursor;
     bool isCtrlPressed;
 
+    // Shader attributes
+    sf::Shader lightShader;
+    sf::RenderTexture polygonTexture;
+    sf::RenderTexture lightTexture;
+
     std::pair<Wall*, sf::Vector2i> lookUpNearestWall(sf::Vector2f& point, float maxDistance = 5.f);
     void updateIntersections();
     void updateSmartRays();

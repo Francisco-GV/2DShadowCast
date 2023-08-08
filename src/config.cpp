@@ -148,9 +148,11 @@ namespace config
                 else if (attribute == "winWidth")       winWidth       = isNumber(value) ? std::stoi(value) : winWidth;
                 else if (attribute == "winHeight")      winHeight      = isNumber(value) ? std::stoi(value) : winHeight;
                 else if (attribute == "framerateLimit") framerateLimit = isNumber(value) ? std::stoi(value) : framerateLimit;
+                else if (attribute == "shaderRadius")   shaderRadius   = isNumber(value) ? std::stoi(value) : framerateLimit;
                 else if (attribute == "smartRays")      smartRays      = validateBool(value);
                 else if (attribute == "showSmartRays")  showSmartRays  = validateBool(value);
                 else if (attribute == "antialiasing")   antialiasing   = validateBool(value);
+                else if (attribute == "lightShader")    lightShader    = validateBool(value);
                 else if (attribute == "showPolygons")   showPredefinedPolygons = validateBool(value);
                 else if (attribute == "bgColor")        bgColor        = parseColor(value);
                 else if (attribute == "wallsColor")     wallsColor     = parseColor(value);
@@ -177,6 +179,8 @@ namespace config
     unsigned int winHeight = 360;
     bool antialiasing = true;
     unsigned int framerateLimit = 60;
+    bool lightShader = false;
+    int shaderRadius = winWidth;
 
     /* Color */
     sf::Color bgColor = sf::Color::Black;

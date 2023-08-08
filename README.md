@@ -32,7 +32,9 @@ You can use a configuration file to modify certain values without the need of mo
 | framerateLimit   | Specify FPS limit                                            | 60                 | unsigned int |
 | smartRays        | Cast rays to vertices only and create <br/>a lighting polygon| false              | bool         |
 | showSmartRays    | Draw smart rays on lighting polygon                          | false              | bool         |
-| antialiasing     | Enable antialiasing  (smooth drawing)                        | true               | bool         |
+| lightShader      | Use gradient shader in lighting polygon                      | false              | bool         |
+| shaderRadius     | Set the gradient radius of light shader                      | winWidth (640)     | bool         |
+| antialiasing     | Enable antialiasing (smooth drawing)                         | true               | bool         |
 | showPolygons     | Show predefined polygons at start                            | true               | bool         |
 | bgColor          | Set background color                                         | 0                  | rgba*        |
 | wallsColor       | Set the color of walls                                       | 255                | rgba*        |

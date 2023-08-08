@@ -67,6 +67,19 @@ Canvas::Canvas() : window(sf::VideoMode(config::winWidth, config::winHeight),
         Wall wall = boundaryWalls.emplace_back(ax, ay, bx, by);
         walls.push_back(wall);
     }
+
+    // Initialize light texture and shader
+    if (config::smartRays && config::lightShader)
+    {
+        lightTexture.create(config::winWidth, config::winHeight);
+        polygonTexture.create(config::winWidth, config::winHeight, createContextSettings());
+
+        polygonTexture.setSmooth(true);
+        lightTexture.setSmooth(true);
+
+        lightShader.loadFromMemory(config::VertexShader, config::RadialGradient);
+        lightShader.setUniform("windowHeight", static_cast<float>(window.getSize().y));
+    }
 }
 
 void Canvas::start()
@@ -101,30 +114,24 @@ void Canvas::draw()
 {
     window.clear(config::bgColor);
 
-    //Draw walls
-    for (Wall& wall : walls)
+    if (config::smartRays && config::lightShader)
     {
-        sf::Vertex lineLines[]
-        {
-            sf::Vertex(wall.getA(), config::wallsColor),
-            sf::Vertex(wall.getB(), config::wallsColor)
-        };
+        lightTexture.clear(sf::Color::Transparent);
 
-        window.draw(lineLines, 2, sf::Lines);
+        sf::CircleShape circle(config::shaderRadius);
+        circle.setOrigin(circle.getRadius(), circle.getRadius());
+        circle.setPosition(mousePosition);
+        circle.setFillColor(sf::Color::Transparent);
+
+        lightShader.setUniform("color", sf::Glsl::Vec4(1.f, 1.f, 1.f, 1.f)); // White
+        lightShader.setUniform("center", circle.getPosition());
+        lightShader.setUniform("radius", circle.getRadius());
+        lightShader.setUniform("expand", 0.f);
+    
+        lightTexture.draw(circle, &lightShader);
+        lightTexture.display();
     }
 
-    // Draw nearest wall when Ctrl is pressed 
-    if (nearestWall != nullptr)
-    {
-        sf::Vertex lineLines[]
-        {
-            sf::Vertex(nearestWall->getA(), config::nearestWallColor),
-            sf::Vertex(nearestWall->getB(), config::nearestWallColor)
-
-        };
-        // Over drawn
-        window.draw(lineLines, 2, sf::Lines);
-    }
     // Draw rays
     if (raysVisible)
     {
@@ -143,7 +150,19 @@ void Canvas::draw()
 
             if (optimizedRays.size() != 0) vertices[size - 1] = vertices[1];
 
-            window.draw(vertices, size, sf::TriangleFan);
+            if (config::lightShader)
+            {
+                polygonTexture.clear(sf::Color::Transparent);
+                polygonTexture.draw(vertices, size, sf::TriangleFan);
+                polygonTexture.draw(sf::Sprite(lightTexture.getTexture()), sf::BlendMode(sf::BlendMultiply));
+                polygonTexture.display();
+            
+                window.draw(sf::Sprite(polygonTexture.getTexture()));
+            }
+            else
+            {
+                window.draw(vertices, size, sf::TriangleFan);
+            }
         }
         
         if (!config::smartRays || config::showSmartRays)
@@ -158,6 +177,18 @@ void Canvas::draw()
                 window.draw(rayLines, 2, sf::Lines);
             }
         }
+    }
+
+    //Draw walls
+    for (Wall& wall : walls)
+    {
+        sf::Vertex lineLines[]
+        {
+            sf::Vertex(wall.getA(), config::wallsColor),
+            sf::Vertex(wall.getB(), config::wallsColor)
+        };
+
+        window.draw(lineLines, 2, sf::Lines);
     }
 
     // Draw new wall
@@ -184,6 +215,19 @@ void Canvas::draw()
         window.draw(dot);
 
         window.draw(newWallLines, 2, sf::Lines);
+    }
+
+    // Draw nearest wall when Ctrl is pressed 
+    if (nearestWall != nullptr)
+    {
+        sf::Vertex lineLines[]
+        {
+            sf::Vertex(nearestWall->getA(), config::nearestWallColor),
+            sf::Vertex(nearestWall->getB(), config::nearestWallColor)
+
+        };
+        // Over drawn
+        window.draw(lineLines, 2, sf::Lines);
     }
 
     window.display(); 
