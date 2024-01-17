@@ -12,6 +12,15 @@ namespace config
 {
     namespace // Utility functions
     {
+        inline char getSystemSeparator()
+        {
+            #ifdef _WIN32
+                return '\\';
+            #else
+                return '/';
+            #endif
+        }
+
         void trimString(std::string& s, const std::string& characters = " \t\n\r\f\v")
         {
             s.erase(0, s.find_first_not_of(characters));
@@ -112,7 +121,7 @@ namespace config
         {
             std::string strPath(path);
             
-            size_t pos = strPath.find_last_of("\\");
+            size_t pos = strPath.find_last_of(getSystemSeparator());
             strPath.erase(pos);
 
             return strPath;
@@ -121,7 +130,7 @@ namespace config
 
     void loadConfigFile(char* argPath)
     {
-        std::string filePath = getDirectoryPath(argPath) + "\\" + configFileName;
+        std::string filePath = getDirectoryPath(argPath) + getSystemSeparator() + configFileName;
 
         std::ifstream configFile(filePath);
 
